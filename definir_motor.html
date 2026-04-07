@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Adicionar Motor — EnergyMonitor</title>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="logo">EnergyMonitor <span>v2</span></div>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html">Dashboard</a></li>
+          <li><a href="motor.html">Motores</a></li>
+          <li><a href="#">Relatórios</a></li>
+        </ul>
+      </nav>
+      <div class="mqtt-indicators">
+        <span id="mqtt-status" class="mqtt-badge mqtt-offline">MQTT ○</span>
+        <span id="esp-status"  class="mqtt-badge mqtt-offline">ESP32 ○</span>
+      </div>
+    </header>
+
+    <main class="page-definir">
+      <div class="motores-header">
+        <h2 class="section-title">Adicionar motor</h2>
+      </div>
+
+      <div id="toast" class="toast"></div>
+
+      <!-- Aviso se ESP32 offline -->
+      <div id="aviso-esp" class="aviso-esp" style="display:none">
+        ⚠ ESP32 offline — os pinos de relé serão carregados quando ele conectar.
+        Você ainda pode cadastrar o motor e a configuração será enviada ao conectar.
+      </div>
+
+      <div class="form-card">
+        <div class="form-grid">
+
+          <!-- Nome -->
+          <div class="field full">
+            <label for="nome">Nome do motor</label>
+            <input type="text" id="nome" placeholder="Ex: Bomba d'água 1" />
+          </div>
+
+          <!-- Tipo de partida -->
+          <div class="field full">
+            <label for="tipo">Tipo de partida</label>
+            <select id="tipo" onchange="atualizarCamposPartida()">
+              <option value="">Selecione...</option>
+              <option value="Direta">Direta</option>
+              <option value="Direta com reversão">Direta com reversão</option>
+              <option value="Estrela-triângulo">Estrela-triângulo</option>
+              <option value="Soft starter">Soft starter</option>
+              <option value="Inversor de frequência">Inversor de frequência</option>
+              <option value="Auto-transformador">Auto-transformador</option>
+              <option value="Chave compensadora">Chave compensadora</option>
+            </select>
+          </div>
+
+          <!-- ── Seleção de relés ── -->
+          <div class="field full rele-section">
+            <label>Relé principal (Pino GPIO)</label>
+            <div class="rele-selector" id="rele-selector-a">
+              <select id="pino-a" class="pino-select">
+                <option value="">— Aguardando ESP32 —</option>
+              </select>
+              <span class="hint">relé de ligar/desligar</span>
+            </div>
+          </div>
+
+          <!-- Relé de reversão — aparece só quando tipo = "Direta com reversão" -->
+          <div class="field full rele-section" id="campo-rele-b" style="display:none">
+            <label>Relé de reversão (Pino GPIO)</label>
+            <div class="rele-selector" id="rele-selector-b">
+              <select id="pino-b" class="pino-select">
+                <option value="">— Aguardando ESP32 —</option>
+              </select>
+              <span class="hint">relé para sentido B (reversão)</span>
+            </div>
+          </div>
+
+          <!-- Tempos e correntes -->
+          <div class="field">
+            <label for="tempo">Tempo de partida</label>
+            <input type="number" id="tempo" placeholder="Ex: 10" min="0" step="0.1" />
+            <span class="hint">segundos (s)</span>
+          </div>
+          <div class="field">
+            <label for="corrente-max">Corrente máxima</label>
+            <input type="number" id="corrente-max" placeholder="Ex: 150" min="0" step="0.1" />
+            <span class="hint">ampères (A)</span>
+          </div>
+          <div class="field full">
+            <label for="corrente-nom">Corrente nominal</label>
+            <input type="number" id="corrente-nom" placeholder="Ex: 30" min="0" step="0.1" />
+            <span class="hint">ampères (A)</span>
+          </div>
+
+        </div>
+
+        <!-- Preview do pino selecionado -->
+        <div id="pino-preview" class="pino-preview" style="display:none">
+          <span id="pino-preview-txt"></span>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-cancel" onclick="limparForm()">Limpar</button>
+          <button class="btn-add"    onclick="adicionarMotor()">Adicionar motor</button>
+        </div>
+      </div>
+
+      <!-- Seção de informação sobre os pinos -->
+      <div class="form-card" style="margin-top:1rem">
+        <h3 style="color:var(--text-muted);font-size:.85rem;margin-bottom:.75rem;letter-spacing:.05em">
+          ℹ PINOS DISPONÍVEIS NO ESP32
+        </h3>
+        <div id="pinos-info" class="pinos-info">
+          <span class="pinos-loading">Aguardando conexão com o ESP32...</span>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="main-footer">
+      <p>&copy; 2025 EnergyMonitor Pro. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="mqtt_config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

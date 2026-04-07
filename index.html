@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Dashboard — EnergyMonitor</title>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="logo">EnergyMonitor <span>v2</span></div>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-ativo">Dashboard</a></li>
+          <li><a href="motor.html">Motores</a></li>
+          <li><a href="#">Relatórios</a></li>
+        </ul>
+      </nav>
+      <div class="mqtt-indicators">
+        <span id="mqtt-status" class="mqtt-badge mqtt-offline">MQTT ○</span>
+        <span id="esp-status"  class="mqtt-badge mqtt-offline">ESP32 ○</span>
+      </div>
+    </header>
+
+    <main class="dashboard-grid">
+      <div class="content-area">
+
+        <!-- ── Seletor de motor ── -->
+        <section class="motor-selector-section">
+          <div class="motor-selector-bar">
+            <span class="motor-selector-label">⚙ Motor monitorado</span>
+            <select id="motor-select" class="motor-select">
+              <option value="">— Selecione um motor —</option>
+            </select>
+            <div id="motor-info-badge" class="motor-info-badge" style="display:none"></div>
+          </div>
+        </section>
+
+        <!-- ── Parâmetros em tempo real ── -->
+        <section class="params-section">
+          <h2 class="section-title">Parâmetros em tempo real</h2>
+          <div class="params-grid">
+            <article class="card param-item">
+              <h3>Tensão (V)</h3>
+              <p class="param-value" id="dash-tensao">—</p>
+            </article>
+            <article class="card param-item">
+              <h3>Corrente média (A)</h3>
+              <p class="param-value" id="dash-corrente">—</p>
+            </article>
+            <article class="card param-item">
+              <h3>Potência ativa (kW)</h3>
+              <p class="param-value" id="dash-potencia">—</p>
+            </article>
+            <article class="card param-item">
+              <h3>Fator de potência</h3>
+              <p class="param-value" id="dash-fp">—</p>
+            </article>
+            <article class="card param-item">
+              <h3>Consumo acumulado (kWh)</h3>
+              <p class="param-value" id="dash-kwh">—</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── Seção de fases ── -->
+        <section class="charts-section">
+          <h2 class="section-title">Corrente por fase</h2>
+
+          <!-- Minigauges das fases -->
+          <div class="fase-cards">
+            <div class="fase-card fase-a">
+              <span class="fase-label">Fase A</span>
+              <span class="fase-valor" id="fase-a-val">— A</span>
+              <div class="fase-bar-wrap"><div class="fase-bar" id="fase-a-bar" style="background:#f59e0b"></div></div>
+            </div>
+            <div class="fase-card fase-b">
+              <span class="fase-label">Fase B</span>
+              <span class="fase-valor" id="fase-b-val">— A</span>
+              <div class="fase-bar-wrap"><div class="fase-bar" id="fase-b-bar" style="background:#3b82f6"></div></div>
+            </div>
+            <div class="fase-card fase-c">
+              <span class="fase-label">Fase C</span>
+              <span class="fase-valor" id="fase-c-val">— A</span>
+              <div class="fase-bar-wrap"><div class="fase-bar" id="fase-c-bar" style="background:#10b981"></div></div>
+            </div>
+            <div class="fase-card fase-desb">
+              <span class="fase-label">Desbalanceamento</span>
+              <span class="fase-valor" id="fase-desb-val">— %</span>
+              <div class="fase-bar-wrap"><div class="fase-bar" id="fase-desb-bar" style="background:#ef4444"></div></div>
+            </div>
+          </div>
+
+          <div class="charts-grid">
+
+            <!-- Gráfico trifásico principal -->
+            <article class="card chart-card featured">
+              <div class="chart-header">
+                <h3>Corrente por fase — histórico (A)</h3>
+                <div class="chart-controls">
+                  <span class="chart-legend-dot" style="background:#f59e0b"></span>
+                  <span class="chart-legend-label">Fase A</span>
+                  <span class="chart-legend-dot" style="background:#3b82f6;margin-left:8px"></span>
+                  <span class="chart-legend-label">Fase B</span>
+                  <span class="chart-legend-dot" style="background:#10b981;margin-left:8px"></span>
+                  <span class="chart-legend-label">Fase C</span>
+                  <button class="btn-chart-clear" id="btn-limpar-fases" title="Limpar histórico">↺</button>
+                </div>
+              </div>
+              <div class="chart-wrap">
+                <canvas id="chart-fases"></canvas>
+              </div>
+            </article>
+
+            <!-- Potência -->
+            <article class="card chart-card">
+              <div class="chart-header">
+                <h3>Potência ativa (kW)</h3>
+                <div class="chart-controls">
+                  <span class="chart-legend-dot" style="background:#10b981"></span>
+                  <span class="chart-legend-label">kW</span>
+                </div>
+              </div>
+              <div class="chart-wrap chart-wrap-sm">
+                <canvas id="chart-potencia"></canvas>
+              </div>
+            </article>
+
+            <!-- Fator de potência -->
+            <article class="card chart-card">
+              <div class="chart-header">
+                <h3>Fator de potência</h3>
+                <div class="chart-controls">
+                  <span class="chart-legend-dot" style="background:#a78bfa"></span>
+                  <span class="chart-legend-label">FP</span>
+                </div>
+              </div>
+              <div class="chart-wrap chart-wrap-sm">
+                <canvas id="chart-fp"></canvas>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+      </div><!-- /.content-area -->
+
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar">
+        <h3>Motor selecionado</h3>
+        <div id="sidebar-motor-nome" class="sidebar-motor-nome">—</div>
+        <div id="sidebar-motor-tipo" class="sidebar-motor-tipo"></div>
+
+        <div class="sidebar-divider"></div>
+
+        <h3>Status</h3>
+        <div class="status-badge">Sistema estável</div>
+
+        <ul class="status-list" style="margin-top:1rem">
+          <li><span>Eficiência (FP)</span>  <strong id="sidebar-eficiencia">—</strong></li>
+          <li><span>Pico — Fase A</span>    <strong id="sidebar-pico-a">—</strong></li>
+          <li><span>Pico — Fase B</span>    <strong id="sidebar-pico-b">—</strong></li>
+          <li><span>Pico — Fase C</span>    <strong id="sidebar-pico-c">—</strong></li>
+          <li><span>Última leitura</span>   <strong id="dash-ultima-leitura">—</strong></li>
+          <li><span>Amostras</span>         <strong id="sidebar-amostras">0</strong></li>
+        </ul>
+
+        <div class="sidebar-divider"></div>
+
+        <h3>Limites do motor</h3>
+        <ul class="status-list">
+          <li><span>Corrente nom.</span>    <strong id="sidebar-cnom">—</strong></li>
+          <li><span>Corrente máx.</span>    <strong id="sidebar-cmax">—</strong></li>
+          <li><span>Tempo de partida</span> <strong id="sidebar-tempo">—</strong></li>
+        </ul>
+
+        <div class="sidebar-divider"></div>
+
+        <h3>Alertas</h3>
+        <div id="alertas-container">
+          <div class="alerta-vazio">Nenhum alerta ativo</div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="main-footer">
+      <p>&copy; 2025 EnergyMonitor Pro. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="mqtt_config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

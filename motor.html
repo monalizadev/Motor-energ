@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Motores — EnergyMonitor</title>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="logo">EnergyMonitor <span>v2</span></div>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html">Dashboard</a></li>
+          <li><a href="motor.html">Motores</a></li>
+          <li><a href="#">Relatórios</a></li>
+        </ul>
+      </nav>
+      <div class="mqtt-indicators">
+        <span id="mqtt-status" class="mqtt-badge mqtt-offline">MQTT ○</span>
+        <span id="esp-status"  class="mqtt-badge mqtt-offline">ESP32 ○</span>
+      </div>
+    </header>
+
+    <main class="page-motores">
+      <div class="motores-header">
+        <h2 class="section-title">Botões de controle</h2>
+        <a href="definir_motor.html" class="btn-novo-motor">+ Novo motor</a>
+      </div>
+
+      <section id="botoes-de-controle"></section>
+
+      <div class="motores-cadastrados">
+        <h3>Motores cadastrados</h3>
+        <div class="lista-motores" id="lista-motores"></div>
+      </div>
+    </main>
+
+    <footer class="main-footer">
+      <p>&copy; 2025 EnergyMonitor Pro. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="mqtt_config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
