@@ -1,2 +1,4 @@
 node_modules/
+.vercel/
 motores.json
+mqtt_client.js

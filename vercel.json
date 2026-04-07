@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/motores/:id", "destination": "/api/motores/[id]" },
+    { "source": "/api/motores",     "destination": "/api/motores/index" }
+  ]
+}

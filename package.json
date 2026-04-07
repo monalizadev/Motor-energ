@@ -2,12 +2,15 @@
   "name": "energymonitor",
   "version": "2.0.0",
   "description": "Monitor de energia elétrica com controle de motores via MQTT",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "npx nodemon server.js"
+  "engines": {
+    "node": "18.x"
   },
-  "dependencies": {
-    "express": "^4.19.2"
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vercel": "^34.0.0"
   }
 }
